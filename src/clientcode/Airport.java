@@ -2,6 +2,9 @@ package clientcode;
 
 import data.airport.model.FlightData;
 import data.airport.model.FlightDataCollection;
+import data.airport.states.Arriving;
+import data.airport.states.Boarding;
+import totem.airport.Totem;
 
 import java.util.Scanner;
 
@@ -10,6 +13,18 @@ public class Airport {
     private FlightDataCollection collection = new FlightDataCollection();
 
     public void run() {
+        Totem arrivingTotem = new Totem(0, 0,"Arriving Totem");
+        Totem boardingTotem = new Totem(415, 0,"Boarding Totem");
+        Totem arriveAndBoardTotem = new Totem(830, 0,"arriveAndBoardTotem");
+
+        arrivingTotem.startTotem(Arriving.getInstance());
+        boardingTotem.startTotem(Boarding.getInstance());
+        arriveAndBoardTotem.startTotem(Boarding.getInstance(), Arriving.getInstance());
+
+        collection.register(arrivingTotem);
+        collection.register(boardingTotem);
+        collection.register(arriveAndBoardTotem);
+
         int option;
         do{
             System.out.println("1 - Novo voo");
@@ -37,6 +52,9 @@ public class Airport {
 
                 default:
                     System.out.println("Aeroporto fechado!");
+                    arrivingTotem.closeFrame();
+                    boardingTotem.closeFrame();
+                    arriveAndBoardTotem.closeFrame();
                     break;
             }
         }while (option != 0);
